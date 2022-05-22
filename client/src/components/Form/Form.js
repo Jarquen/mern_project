@@ -1,23 +1,36 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useStyles from './styles';
 import {TextField, Button, Typography, Paper} from "@material-ui/core";
 import FileBase from "react-file-base64";
 import {useDispatch} from "react-redux";
 import * as api from '../../api'
-import {createPost} from "../../feature/postsSlice";
+import {createPost, updatePost} from "../../feature/postsSlice";
+import {useSelector} from "react-redux";
 
-const Form = () => {
+const Form = ({currentId, setCurrentId}) => {
     const classes = useStyles();
     const [postData, setPostData] = useState({creator: '', title: '', message: '', tags: '', selectedFile: ''});
+    const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
     const dispatch = useDispatch();
     const formRef = useRef();
+
+    useEffect(() => {
+        if (post) setPostData(post);
+    }, [post])
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        api.createPost(postData).then(() => {
-            dispatch(createPost(postData))
-        })
+        if(currentId) {
+            console.log(currentId)
+            api.updatePost(currentId, postData).then(() => {
+                dispatch(updatePost(currentId, postData))
+            });
+        } else {
+            api.createPost(postData).then(() => {
+                dispatch(createPost(postData))
+            })
+        }
     }
 
     const clear = () => {
