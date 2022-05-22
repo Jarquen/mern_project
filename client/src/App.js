@@ -10,13 +10,13 @@ import Posts from "./components/Posts/Posts";
 import useStyles from './styles';
 
 const App = () => {
-    const [currentId, setCurrentId] = useState(null)
+    const [currentId, setCurrentId] = useState(0)
     const classes = useStyles();
     const dispatch = useDispatch();
 
     useEffect(() => {
         api.fetchPosts().then((res) => dispatch(getPosts(res.data)));
-    }, [dispatch])
+    }, [dispatch, currentId])
 
     return (
         <Container maxWidth="lg">

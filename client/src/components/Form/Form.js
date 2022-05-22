@@ -18,29 +18,30 @@ const Form = ({currentId, setCurrentId}) => {
         if (post) setPostData(post);
     }, [post])
 
+    const clear = () => {
+        setCurrentId(0);
+        setPostData({creator: '', title: '', message: '', tags: '', selectedFile: ''})
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if(currentId) {
-            console.log(currentId)
+        if(currentId !== 0) {
             api.updatePost(currentId, postData).then(() => {
                 dispatch(updatePost(currentId, postData))
-            });
+            }).then(clear());
+            clear();
         } else {
             api.createPost(postData).then(() => {
                 dispatch(createPost(postData))
-            })
+            }).then(clear());
         }
-    }
-
-    const clear = () => {
-
     }
 
     return (
         <Paper className={classes.paper}>
             <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit} ref={formRef}>
-                <Typography variant="h6">Creating a Memory</Typography>
+                <Typography variant="h6">{currentId ? 'Editing' : 'Creating'} a Memory</Typography>
                 <TextField name="creator" variant="outlined" label="Creator" fullWidth value={postData.creator}
                            onChange={(e) => setPostData({...postData, creator: e.target.value})}/>
                 <TextField name="title" variant="outlined" label="Title" fullWidth value={postData.title}
