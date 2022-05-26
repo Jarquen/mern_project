@@ -24,5 +24,18 @@ export const postsSlice = createSlice({
     }
 });
 
+export const authSlice = createSlice({
+    name: "auth",
+    initialState: {
+        posts: null
+    },
+    reducers: {
+        authentication: (state, action) => {
+            localStorage.setItem('profile', JSON.stringify({ ...action?.data }));
+        }
+    }
+});
+
 export const {getPosts, createPost, updatePost, deletePost, likePost} = postsSlice.actions
-export default postsSlice.reducer;
+export const {authentication} = authSlice.actions
+export default postsSlice.reducer && authSlice.reducer;
