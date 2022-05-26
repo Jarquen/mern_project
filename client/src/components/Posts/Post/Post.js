@@ -7,16 +7,30 @@ import MoreHorizIcom from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 import * as api from '../../../api'
 import {useDispatch} from "react-redux";
-import {deletePost} from "../../../feature/postsSlice";
+import {deletePost, likePost} from "../../../feature/postsSlice";
 
 const Post = ({post, setCurrentId}) => {
     const classes = useStyles();
     const dispatch = useDispatch()
 
     const handleDelete = () => {
-        api.deletePost(post._id).then(() => {
-            dispatch(deletePost(post._id))
-        });
+        try {
+            api.deletePost(post._id).then(() => {
+                dispatch(deletePost(post._id))
+            });
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleLike = () => {
+        try {
+            api.likePost(post._id).then(() => {
+                dispatch(likePost(post._id))
+            });
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -40,6 +54,7 @@ const Post = ({post, setCurrentId}) => {
             </CardContent>
             <CardActions className={classes.cardActions}>
                 <Button size="small" color="primary" onClick={() => {
+                    handleLike()
                 }}>
                     <ThumbUpAltIcon fontSize="small"/>
                     Like
