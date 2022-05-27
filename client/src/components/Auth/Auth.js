@@ -5,19 +5,26 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import useStyles from './styles'
 import Input from './Input'
 import Icon from "./icon";
-import { gapi } from 'gapi-script';
+import {gapi} from 'gapi-script';
 import {useDispatch} from "react-redux";
+import {authentication} from "../../feature/postsSlice";
+import {useNavigate} from "react-router-dom";
+// import * as api from '../../api'
+
+const initialState = {firstName: "", lastName: "", email: "", password: "", confirmPassword: ""};
 
 const Auth = () => {
     const classes = useStyles();
     const [showPassword, setShowPassword] = useState(false);
     const [isSignup, setIsSignUp] = useState(false);
+    const [formData, setFormData] = useState(initialState)
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         function start() {
             gapi.client.init({
-                clientId: process.env.REACT_PUBLIC_GOOGLE_CLIENT_ID,
+                clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
                 scope: 'email',
             });
         }
@@ -25,12 +32,18 @@ const Auth = () => {
         gapi.load('client:auth2', start);
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
+        if (isSignup) {
+            dispatch(signup(formData, navigate));
+        } else {
+            dispatch(signin(formData, navigate));
+        }
     };
 
-    const handleChange = () => {
-
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value})
     };
 
     const handleShowPassword = () => setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -41,12 +54,12 @@ const Auth = () => {
     };
 
     const googleSuccess = async (res) => {
-        console.log(res);
         const result = res?.profileObj;
         const token = res?.tokenId;
 
         try {
-            dispatch({type: 'AUTH', data: {result, token}})
+            dispatch(authentication({result, token}))
+            navigate('/');
         } catch (error) {
             console.log(error);
         }
@@ -81,7 +94,7 @@ const Auth = () => {
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                         {isSignup ? "Sign Up" : "Sign In"}
                     </Button>
-                    <GoogleLogin clientId={process.env.REACT_PUBLIC_GOOGLE_CLIENT_ID} render={(renderProps) => (
+                    <GoogleLogin clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID} render={(renderProps) => (
                         <Button className={classes.googleButton} color="primary" fullWidth onClick={renderProps.onClick}
                                 disabled={renderProps.disabled} startIcon={<Icon/>} variant="contained">
                             Google Sign In

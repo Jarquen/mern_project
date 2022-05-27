@@ -19,7 +19,7 @@ export const postsSlice = createSlice({
             state.posts = state.posts.filter((post) => post._id !== payload);
         },
         likePost: (state, {payload}) => {
-            state.posts = this.state.posts.map((post) => (post._id === payload[0] ? payload: post))
+            state.posts = this.state.posts.map((post) => (post._id === payload[0] ? payload : post))
         }
     }
 });
@@ -30,12 +30,20 @@ export const authSlice = createSlice({
         posts: null
     },
     reducers: {
-        authentication: (state, action) => {
-            localStorage.setItem('profile', JSON.stringify({ ...action?.data }));
+        authentication: (state = {authData: null}, action) => {
+            localStorage.setItem('profile', JSON.stringify({...action?.payload}));
+        },
+        disconnection: (state, {payload}) => {
+            localStorage.clear();
         }
     }
 });
 
 export const {getPosts, createPost, updatePost, deletePost, likePost} = postsSlice.actions
-export const {authentication} = authSlice.actions
-export default postsSlice.reducer && authSlice.reducer;
+export const {authentication, disconnection} = authSlice.actions
+
+// const reducer = combineReducers({
+//
+// })
+
+export default postsSlice.reducer;
