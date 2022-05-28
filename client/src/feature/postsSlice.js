@@ -33,7 +33,7 @@ export const authSlice = createSlice({
         authentication: (state = {authData: null}, action) => {
             localStorage.setItem('profile', JSON.stringify({...action?.payload}));
         },
-        disconnection: (state, {payload}) => {
+        disconnection: () => {
             localStorage.clear();
         }
     }
@@ -41,9 +41,5 @@ export const authSlice = createSlice({
 
 export const {getPosts, createPost, updatePost, deletePost, likePost} = postsSlice.actions
 export const {authentication, disconnection} = authSlice.actions
-
-// const reducer = combineReducers({
-//
-// })
 
 export default postsSlice.reducer;

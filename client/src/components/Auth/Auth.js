@@ -9,7 +9,7 @@ import {gapi} from 'gapi-script';
 import {useDispatch} from "react-redux";
 import {authentication} from "../../feature/postsSlice";
 import {useNavigate} from "react-router-dom";
-// import * as api from '../../api'
+import * as api from '../../api'
 
 const initialState = {firstName: "", lastName: "", email: "", password: "", confirmPassword: ""};
 
@@ -36,10 +36,16 @@ const Auth = () => {
         e.preventDefault();
 
         if (isSignup) {
-            dispatch(signup(formData, navigate));
+            const data = api.signUp(formData)
+            api.signUp(formData).then((res) => {
+                dispatch(authentication(res.data))
+            }).then(navigate('/'));
         } else {
-            dispatch(signin(formData, navigate));
+            api.signIn(formData).then((res) => {
+                dispatch(authentication(res.data))
+            }).then(navigate('/'));
         }
+        navigate('/')
     };
 
     const handleChange = (e) => {
@@ -50,7 +56,7 @@ const Auth = () => {
 
     const switchMode = () => {
         setIsSignUp((prevIsSignUp) => !prevIsSignUp);
-        handleShowPassword(false);
+        setShowPassword(false);
     };
 
     const googleSuccess = async (res) => {
