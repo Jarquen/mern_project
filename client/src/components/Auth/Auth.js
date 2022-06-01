@@ -32,20 +32,18 @@ const Auth = () => {
         gapi.load('client:auth2', start);
     }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (isSignup) {
-            const data = api.signUp(formData)
-            api.signUp(formData).then((res) => {
+            await api.signUp(formData).then((res) => {
                 dispatch(authentication(res.data))
             }).then(navigate('/'));
         } else {
-            api.signIn(formData).then((res) => {
+            await api.signIn(formData).then((res) => {
                 dispatch(authentication(res.data))
             }).then(navigate('/'));
         }
-        navigate('/')
     };
 
     const handleChange = (e) => {
@@ -64,7 +62,7 @@ const Auth = () => {
         const token = res?.tokenId;
 
         try {
-            dispatch(authentication({result, token}))
+            await dispatch(authentication({result, token}))
             navigate('/');
         } catch (error) {
             console.log(error);

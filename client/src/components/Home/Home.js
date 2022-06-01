@@ -12,7 +12,7 @@ const Home = () => {
 
     useEffect(() => {
         api.fetchPosts().then((res) => dispatch(getPosts(res.data)));
-    }, [dispatch, currentId])
+    }, [currentId, dispatch])
 
     return (
         <Grow in>
