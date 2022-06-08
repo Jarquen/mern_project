@@ -9,6 +9,9 @@ export const postsSlice = createSlice({
         getPosts: (state, {payload}) => {
             state.posts = payload;
         },
+        getPostsBySearch: (state, {payload}) => {
+            state.posts = payload;
+        },
         createPost: (state, {payload}) => {
             state.posts.push(payload);
         },
@@ -39,7 +42,7 @@ export const authSlice = createSlice({
     }
 });
 
-export const {getPosts, createPost, updatePost, deletePost, likePost} = postsSlice.actions
+export const {getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost} = postsSlice.actions
 export const {authentication, disconnection} = authSlice.actions
 
 export default postsSlice.reducer;

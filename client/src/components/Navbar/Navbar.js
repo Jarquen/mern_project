@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {AppBar, Avatar, Button, Toolbar, Typography} from "@material-ui/core";
-import memories from "../../images/memories.png";
+import memories from "../../images/memories-Logo.png";
 import useStyles from './styles';
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
@@ -14,7 +14,6 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    console.log(user);
 
     useEffect(() => {
         const token = user?.token;
