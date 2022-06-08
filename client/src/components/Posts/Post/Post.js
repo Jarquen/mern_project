@@ -1,19 +1,21 @@
 import React from 'react';
 import useStyles from './styles';
-import {Card, CardActions, CardContent, Button, Typography, CardMedia} from "@material-ui/core";
+import {Card, CardActions, CardContent, Button, Typography, CardMedia, ButtonBase} from "@material-ui/core";
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import DeleteIcon from '@material-ui/icons/Delete';
-import MoreHorizIcom from '@material-ui/icons/MoreHoriz';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 import * as api from '../../../api'
 import {useDispatch} from "react-redux";
 import {deletePost, likePost} from "../../../feature/postsSlice";
 import {ThumbUpAltOutlined} from "@material-ui/icons";
+import {useNavigate} from "react-router-dom";
 
 const Post = ({post, setCurrentId}) => {
     const classes = useStyles();
     const dispatch = useDispatch()
     const user = JSON.parse(localStorage.getItem('profile'));
+    const navigate = useNavigate();
 
     const Likes = () => {
         if (post.likes.length > 0) {
@@ -38,7 +40,7 @@ const Post = ({post, setCurrentId}) => {
         } catch (error) {
             console.log(error)
         }
-    }
+    };
 
     const handleLike = async () => {
         try {
@@ -48,28 +50,32 @@ const Post = ({post, setCurrentId}) => {
         } catch (error) {
             console.log(error)
         }
-    }
+    };
+
+    const openPost = () => navigate(`/posts/${post._id}`);
 
     return (
-        <Card className={classes.card} raised elevetaion={6}>
+        <Card className={classes.card} raised elevetaion={6} onClick={openPost}>
             <CardMedia className={classes.media} image={post.selectedFile} title={post.title}/>
             <div className={classes.overlay}>
                 <Typography variant="h6">{post.name}</Typography>
                 <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
             </div>
-            <div className={classes.overlay2}>
-                {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
+            {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
+                <div className={classes.overlay2}>
                     <Button style={{color: 'white'}} size="small" onClick={() => setCurrentId(post._id)}>
-                        <MoreHorizIcom fontSize="medium"/>
+                        <MoreHorizIcon fontSize="medium"/>
                     </Button>
-                )}
-            </div>
+                </div>
+            )}
             <div className={classes.details}>
-                <Typography variant="body2" color="textSecondary">{post.tags.map((tag) => `#${tag}`)}</Typography>
+                <Typography variant="body2" color="textSecondary"
+                            component="h2">{post.tags.map((tag) => `#${tag}`)}</Typography>
             </div>
-            <Typography className={classes.title} variant="h5" gutterBottom>{post.title}</Typography>
+            <Typography className={classes.title} variant="h5" gutterBottom component="h2">{post.title}</Typography>
             <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p" gutterBottom>{post.message}</Typography>
+                <Typography variant="body2" color="textSecondary" component="p"
+                            gutterBottom>{post.message.split(' ').splice(0, 20).join(' ')}...</Typography>
             </CardContent>
             <CardActions className={classes.cardActions}>
                 <Button size="small" color="primary" disabled={!user?.result} onClick={() => {

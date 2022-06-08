@@ -11,6 +11,10 @@ export const postsSlice = createSlice({
         startLoading: (state, {payload}) => {
             state.isLoading = true;
         },
+        getPost: (state, {payload}) => {
+            state.post = payload;
+            state.isLoading = false;
+        },
         getPosts: (state, {payload}) => {
             state.posts = payload.data;
             state.currentPage = payload.currentPage;
@@ -51,7 +55,7 @@ export const authSlice = createSlice({
     }
 });
 
-export const {startLoading, getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost} = postsSlice.actions
+export const {startLoading, getPost, getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost} = postsSlice.actions
 export const {authentication, disconnection} = authSlice.actions
 
 export default postsSlice.reducer;
