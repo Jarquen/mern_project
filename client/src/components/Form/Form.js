@@ -28,13 +28,13 @@ const Form = ({currentId, setCurrentId}) => {
         e.preventDefault();
 
         if (currentId !== 0) {
-            await api.updatePost(currentId, {...postData, name: user?.result?.name}).then(() => {
-                dispatch(updatePost(currentId, {...postData, name: user?.result?.name}))
+            await api.updatePost(currentId, {...postData, name: user?.result?.name}).then((res) => {
+                dispatch(updatePost(currentId, res.data))
             }).then(clear());
             clear();
         } else {
-            await api.createPost({...postData, name: user?.result?.name}).then(() => {
-                dispatch(createPost({...postData, name: user?.result?.name}))
+            await api.createPost({...postData, name: user?.result?.name}).then((res) => {
+                dispatch(createPost(res.data))
             }).then(clear());
         }
     };
@@ -50,7 +50,7 @@ const Form = ({currentId, setCurrentId}) => {
     }
 
     return (
-        <Paper className={classes.paper}>
+        <Paper className={classes.paper} elevation={6}>
             <form autoComplete="off" noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}
                   ref={formRef}>
                 <Typography variant="h6">{currentId ? 'Editing' : 'Creating'} a Memory</Typography>

@@ -6,10 +6,13 @@ import {useSelector} from "react-redux";
 
 const Posts = ({setCurrentId}) => {
     const posts = useSelector((state) => state.posts.posts);
+    const isLoading = useSelector((state) => state.posts.isLoading);
     const classes = useStyles();
 
+    if (!posts.length && !isLoading) return 'No posts';
+
     return (
-        !posts.length ? <CircularProgress /> : (
+        isLoading ? <CircularProgress /> : (
             <Grid className={classes.mainContainer} container alignItems="stretch" spacing={3}>
                 {posts.map((post) => (
                     <Grid key={post._id} item xs={12} sm={12} md={6} lg={3}>

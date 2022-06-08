@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Container, Grid, Grow, Paper, AppBar, TextField, Button} from "@material-ui/core";
 import {useLocation, useNavigate} from "react-router-dom";
 import ChipInput from "material-ui-chip-input";
@@ -6,7 +6,7 @@ import Posts from "../Posts/Posts";
 import Form from "../Form/Form";
 import {useDispatch} from "react-redux";
 import * as api from "../../api";
-import {getPosts, getPostsBySearch} from "../../feature/postsSlice";
+import {getPostsBySearch, startLoading} from "../../feature/postsSlice";
 import Pagination from "../Pagination";
 import useStyles from './styles';
 
@@ -26,16 +26,15 @@ const Home = () => {
     const [tags, setTags] = useState([]);
 
 
-    useEffect(() => {
-        api.fetchPosts().then((res) => dispatch(getPosts(res.data)));
-    }, [currentId, dispatch])
-
-    const searchPost = () => {
+    const searchPost = async () => {
         if (search.trim() || tags) {
-            api.fetchPostsBySearch({
+            dispatch(startLoading());
+            await api.fetchPostsBySearch({
                 search,
                 tags: tags.join(',')
-            }).then((res) => dispatch(getPostsBySearch(res.data.data)));
+            }).then((res) => {
+                dispatch(getPostsBySearch(res.data))
+            });
             history(`/posts/search?searchQuery=${search || 'none'}&tags=${tags.join(',')}`)
         } else {
             history('/')
@@ -74,9 +73,11 @@ const Home = () => {
                                     color="primary">Search</Button>
                         </AppBar>
                         <Form currentId={currentId} setCurrentId={setCurrentId}/>
-                        <Paper className={classes.pagination} elevation={6}>
-                            <Pagination/>
-                        </Paper>
+                        {(!searchQuery && !tags.length) && (
+                            <Paper className={classes.pagination} elevation={6}>
+                                <Pagination page={page} className={classes.pagination}/>
+                            </Paper>
+                        )}
                     </Grid>
                 </Grid>
             </Container>

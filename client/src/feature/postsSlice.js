@@ -1,16 +1,25 @@
 import {createSlice} from '@reduxjs/toolkit'
 
+
 export const postsSlice = createSlice({
     name: "posts",
     initialState: {
-        posts: {}
+        posts: {},
+        isLoading: true,
     },
     reducers: {
+        startLoading: (state, {payload}) => {
+            state.isLoading = true;
+        },
         getPosts: (state, {payload}) => {
-            state.posts = payload;
+            state.posts = payload.data;
+            state.currentPage = payload.currentPage;
+            state.numberOfPages = payload.numberOfPages;
+            state.isLoading = false;
         },
         getPostsBySearch: (state, {payload}) => {
-            state.posts = payload;
+            state.posts = payload.data;
+            state.isLoading = false;
         },
         createPost: (state, {payload}) => {
             state.posts.push(payload);
@@ -42,7 +51,7 @@ export const authSlice = createSlice({
     }
 });
 
-export const {getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost} = postsSlice.actions
+export const {startLoading, getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost} = postsSlice.actions
 export const {authentication, disconnection} = authSlice.actions
 
 export default postsSlice.reducer;
