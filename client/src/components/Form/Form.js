@@ -6,6 +6,7 @@ import {useDispatch} from "react-redux";
 import * as api from '../../api'
 import {createPost, updatePost} from "../../feature/postsSlice";
 import {useSelector} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 const Form = ({currentId, setCurrentId}) => {
     const classes = useStyles();
@@ -14,6 +15,7 @@ const Form = ({currentId, setCurrentId}) => {
     const dispatch = useDispatch();
     const formRef = useRef();
     const user = JSON.parse(localStorage.getItem('profile'));
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (post) setPostData(post);
@@ -29,12 +31,13 @@ const Form = ({currentId, setCurrentId}) => {
 
         if (currentId !== 0) {
             await api.updatePost(currentId, {...postData, name: user?.result?.name}).then((res) => {
-                dispatch(updatePost(currentId, res.data))
+                dispatch(updatePost(currentId, res.data));
+                navigate(`/posts/${res.data._id}`)
             }).then(clear());
-            clear();
         } else {
             await api.createPost({...postData, name: user?.result?.name}).then((res) => {
                 dispatch(createPost(res.data))
+                navigate(`/posts/${res.data._id}`)
             }).then(clear());
         }
     };
