@@ -17,8 +17,8 @@ const Paginate = ({page}) => {
     }
 
     useEffect( () => {
+        dispatch(startLoading());
         if (page) {
-            dispatch(startLoading());
             fetchPosts()
         }
     }, [page, dispatch])

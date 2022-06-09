@@ -36,6 +36,14 @@ export const postsSlice = createSlice({
         },
         likePost: (state, {payload}) => {
             state.posts = state.posts.map((post) => (post._id === payload._id ? payload : post))
+        },
+        commentPost: (state, {payload}) => {
+            state.posts = state.posts.map((post) => {
+                if (post._id === payload._id) {
+                    return payload;
+                }
+                return post;
+            })
         }
     }
 });
@@ -55,7 +63,7 @@ export const authSlice = createSlice({
     }
 });
 
-export const {startLoading, getPost, getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost} = postsSlice.actions
+export const {startLoading, getPost, getPosts, getPostsBySearch, createPost, updatePost, deletePost, likePost, commentPost} = postsSlice.actions
 export const {authentication, disconnection} = authSlice.actions
 
 export default postsSlice.reducer;
